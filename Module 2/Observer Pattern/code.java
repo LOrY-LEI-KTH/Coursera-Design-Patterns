@@ -1,69 +1,87 @@
-//Subject.java
+Subject.java
 
 public interface Subject {
-
-    public void registerObserver(Observer ob);
-    public void removeObserver(Observer ob);
-    public void notifyObserver();
-
+	public void registerObserver(Observer observer);
+	public void removeObserver(Observer observer);
+	public void notifyObservers();
 }
 
-
-
-
-//Channel.java
-import java.util.ArrayList;
+Channel.java
 
 public class Channel implements Subject {
-  
-  private ArrayList<Observer> observers;
-  private String channelName;
-  private String status;
+	private ArrayList<Observer> observers = new ArrayList<Observer>();
+	private String channelName;
+	private String status;
 
-  public String getStatus(){return this.status;}
-  public void setStatus(String status) {
-    this.status = status; 
-  }
-  public void notifyObserver(){
-    for (Observer ob : observers)
-        ob.update(this.status);
-  }
+	public Channel(String channelName, String status) {
+		this.channelName = channelName;
+		this.status = status;
+	}
+	
+	public String getChannelName() {
+		return channelName;
+	}
+	
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
+	}
+	
+	public string getStatus() {
+		return status;
+	}
 
-  public void registerObserver(Observer ob){
-    observers.add(ob);
-  }
-  public void removeObserver(Observer ob){
-    observers.remove(ob);
-  }
-  //
+	public void setStatus(String status) {
+		this.status = status;
+		notifyObservers();
+	}
+
+	public void notifyObservers() {
+		for (Observer obs : observers) {
+			obs.update(this.status);
+		}
+	}
+	
+	public void registerObserver(Observer observer) {
+		observers.add(observer);
+	}
+
+	public void removeObserver(Observer observer) {
+		observers.remove(observer);
+	}
 }
 
 
-
-
-
-//Observer.java
+Observer.java
 
 public interface Observer {
 	public void update(String status);
 }
 
 
-
-
-
-//Follower.java
+Follower.java
 
 public class Follower implements Observer {
 
-private String followerName;
+	private String followerName;
 
-public void update(String status){
-    System.out.print("status changed: ",  status);
-    if (status == "live")
-    play();
-}
+	public Follower(String followerName) {
+		this.followerName = followerName;
+	}
 
-public void play() 
-System.out.print("play the channel");
+	public String getFollowerName() {
+		return followerName;
+	}
+
+	public void setFollowerName(String followerName) {
+		this.followerName = followerName;
+	}
+
+	public void update(String status) {
+		//send message to followers that Channel is live.
+	}
+	
+	public void play() {
+		//play channel
+	}
+
 }
