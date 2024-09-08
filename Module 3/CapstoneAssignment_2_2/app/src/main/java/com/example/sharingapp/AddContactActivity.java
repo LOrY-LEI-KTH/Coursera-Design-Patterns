@@ -13,7 +13,7 @@ public class AddContactActivity extends AppCompatActivity {
 
     private ContactList contact_list = new ContactList();
     private Context context;
-
+    private ContactListController contactListController = new ContactListController(contact_list);
     private EditText username;
     private EditText email;
 
@@ -26,7 +26,7 @@ public class AddContactActivity extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
 
         context = getApplicationContext();
-        contact_list.loadContacts(context);
+        contactListController.loadContacts(context);
     }
 
     public void saveContact(View view) {
@@ -49,7 +49,7 @@ public class AddContactActivity extends AppCompatActivity {
             return;
         }
 
-        for (Contact c : contact_list.getContacts()) {
+        for (Contact c : contactListController.getContacts()) {
             if (c.getUsername().equals(username_str)) {
                 username.setError("Username already taken!");
                 return;
@@ -59,10 +59,7 @@ public class AddContactActivity extends AppCompatActivity {
         Contact contact = new Contact(username_str, email_str, null);
 
         // Add Contact
-        AddContactCommand add_contact_command = new AddContactCommand(contact_list, contact, context);
-        add_contact_command.execute();
-
-        boolean success = add_contact_command.isExecuted();
+        boolean success = contactListController.addContact(contact,context);
         if (!success) {
             return;
         }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * ContactList Class
  */
-public class ContactList {
+public class ContactList extends Observable {
 
     private static ArrayList<Contact> contacts;
     private String FILENAME = "contacts.sav";
@@ -28,26 +28,29 @@ public class ContactList {
 
     public void setContacts(ArrayList<Contact> contact_list) {
         contacts = contact_list;
+        notifyObservers();
     }
 
     public ArrayList<Contact> getContacts() {
         return contacts;
     }
 
-    public ArrayList<String> getAllUsernames(){
+    public ArrayList<String> getAllUsernames() {
         ArrayList<String> username_list = new ArrayList<String>();
-        for (Contact c : contacts){
+        for (Contact c : contacts) {
             username_list.add(c.getUsername());
-            }
+        }
         return username_list;
     }
 
     public void addContact(Contact contact) {
         contacts.add(contact);
+        notifyObservers();
     }
 
     public void deleteContact(Contact contact) {
         contacts.remove(contact);
+        notifyObservers();
     }
 
     public Contact getContact(int index) {
@@ -58,9 +61,9 @@ public class ContactList {
         return contacts.size();
     }
 
-    public Contact getUserByUsername(String username){
-        for (Contact c : contacts){
-            if (c.getUsername().equals(username)){
+    public Contact getUserByUsername(String username) {
+        for (Contact c : contacts) {
+            if (c.getUsername().equals(username)) {
                 return c;
             }
         }
@@ -82,12 +85,12 @@ public class ContactList {
             if (contact.getId().equals(c.getId())) {
                 return pos;
             }
-            pos = pos+1;
+            pos = pos + 1;
         }
         return -1;
     }
 
-    public boolean isUsernameAvailable(String username){
+    public boolean isUsernameAvailable(String username) {
         for (Contact c : contacts) {
             if (c.getUsername().equals(username)) {
                 return false;
@@ -102,7 +105,8 @@ public class ContactList {
             FileInputStream fis = context.openFileInput(FILENAME);
             InputStreamReader isr = new InputStreamReader(fis);
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<Contact>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<Contact>>() {
+            }.getType();
             contacts = gson.fromJson(isr, listType); // temporary
             fis.close();
         } catch (FileNotFoundException e) {
@@ -110,6 +114,7 @@ public class ContactList {
         } catch (IOException e) {
             contacts = new ArrayList<Contact>();
         }
+        notifyObservers();
     }
 
     /**
@@ -132,5 +137,15 @@ public class ContactList {
             return false;
         }
         return true;
+    }
+
+    public Contact getContactByUsername(String username) {
+        for (Contact c : contacts) {
+
+            if (c.getUsername().equals(username)) {
+                return c;
+            }
+        }
+        return null;
     }
 }
