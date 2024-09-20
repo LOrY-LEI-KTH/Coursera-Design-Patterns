@@ -48,6 +48,16 @@ public class EditItemActivity extends AppCompatActivity implements Observer {
     private Switch status;
     private EditText invisible;
 
+
+    private String title_str;
+    private String maker_str;
+    private String description_str;
+    private String length_str;
+    private String width_str;
+    private String height_str;
+
+    Contact contact;
+
     private ArrayAdapter<String> adapter;
     private boolean on_create_update = false;
     private int pos;
@@ -124,50 +134,60 @@ public class EditItemActivity extends AppCompatActivity implements Observer {
         startActivity(intent);
     }
 
-    public void saveItem(View view) {
 
-        String title_str = title.getText().toString();
-        String maker_str = maker.getText().toString();
-        String description_str = description.getText().toString();
-        String length_str = length.getText().toString();
-        String width_str = width.getText().toString();
-        String height_str = height.getText().toString();
+    public boolean validateInput() {
 
-        Contact contact = null;
+        title_str = title.getText().toString();
+        maker_str = maker.getText().toString();
+        description_str = description.getText().toString();
+        length_str = length.getText().toString();
+        width_str = width.getText().toString();
+        height_str = height.getText().toString();
+
         if (!status.isChecked()) {
             String borrower_str = borrower_spinner.getSelectedItem().toString();
             contact = contact_list_controller.getContactByUsername(borrower_str);
         }
 
+        // Input validation goes here...
         if (title_str.equals("")) {
             title.setError("Empty field!");
-            return;
+            return false;
         }
 
         if (maker_str.equals("")) {
             maker.setError("Empty field!");
-            return;
+            return false;
         }
 
         if (description_str.equals("")) {
             description.setError("Empty field!");
-            return;
+            return false;
         }
 
         if (length_str.equals("")) {
             length.setError("Empty field!");
-            return;
+            return false;
         }
 
         if (width_str.equals("")) {
             width.setError("Empty field!");
-            return;
+            return false;
         }
 
         if (height_str.equals("")) {
             height.setError("Empty field!");
+            return false;
+        }
+        return true;
+    }
+
+    public void saveItem(View view) {
+
+        if ( !validateInput() ) {
             return;
         }
+
 
         String id = item_controller.getId(); // Reuse the item id
         Item updated_item = new Item(title_str, maker_str, description_str, image, id);
